@@ -1,88 +1,101 @@
 #include "stable.h"
-#include "extest.h"
+#include "bookmark/bookmarkremoteservice.h"
+#include "bookmark/bookmarkmodel.h"
+
+
+std::shared_ptr<IBookmarkModel> createDummyModel()
+{
+    auto bmS = std::make_shared<DummyBMServer>("http://localhost:8000/bookmarks");
+
+    auto bmModel = std::make_shared<BookmarkModel>();
+    bmModel->setup(bmS, bmS);
+
+    return bmModel;
+}
+
+concurrency::task<void> bookmark_run()
+{
+    std::function<json11::Json(std::shared_ptr<BookmarkItem>)> toJson = [&](auto item)
+    {
+        std::vector<json11::Json> children;
+        for (auto child: item->children_)
+        {
+            children.push_back(toJson(child));
+        }
+
+        std::map<std::string, json11::Json> obj = {
+            { "id",  std::to_string(item->id_) },
+            { "type", item->type_ },
+            { "name",  item->name_ },
+            { "uri",  item->uri_ },
+            { "parentId", item->parent_ ? std::to_string(item->parent_->id_) : "0" },
+            
+        };
+
+        if (children.size() > 0)
+        {
+            obj.insert(std::make_pair("children", json11::Json{ children }));
+        }
+        return obj;
+    };
+
+    auto printItem = [=](auto item)
+    {
+        json11::Json obj = toJson(item);
+
+        std::cout << obj.dump() << std::endl;
+    };
+
+
+    auto bmModel = createDummyModel();
+
+    auto res = __await bmModel->reloadModel();
+    if (!res) { return; }
+
+    auto rootItem = bmModel->rootItem();
+    printItem(rootItem);
+
+    auto l1Folder = __await bmModel->addItem("L1", "", rootItem->id_, 0);
+    __await bmModel->modifyItem(l1Folder, "name", "L1new");
+    auto l2Folder = __await  bmModel->addItem("L2", "", rootItem->id_, 1);
+    __await  bmModel->addItem("u1", "xx://123", rootItem->id_, 1);
+    auto u11 = __await  bmModel->addItem("u11", "xx://1234", l1Folder, 0);
+    auto u12 = __await  bmModel->addItem("u12", "xx://12345", l1Folder, 0);
+    __await  bmModel->moveItem(u11, l2Folder, 0);
+
+    printItem(rootItem);
+
+    __await bmModel->removeItem(l1Folder);
+    printItem(rootItem);
+
+}
+
 
 
 INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nShowCmd)
 {
     (void)hInstance; (void)hPrevInstance; (void)lpCmdLine; (void)nShowCmd;
-    _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
     trace::DebugConsole::allocDebugConsole();
+    trace::DebugConsole::setConsoleTitle("xxxFx");
 
     __debug("main") << "starting...";
 
-    std::function<void()> run_example[] = {
 
+    Storm::App app;
 
-       /*  example_refcount,
+    bookmark_run();
 
-         example_event,
+    DbgWarn << "Quit after 3secs";
 
-         example_list,*/
+    AppUI::asyncDelayed([]() {
 
-         example_map,
+    trace::DebugConsole::releaseDebugConsole();
 
-       /*  example_string,
-
-         example_xml,
-
-         example_json,
-
-         example_callback,
-
-        example_thread,
-
-        example_geometry,
-
-        example_time,
-
-        example_weakptr,
-
-        exmaple_lambda,
-
-        example_bind,
-
-        example_waitable,
-
-        example_throttle,
-
-        example_snowflake,
-
-        example_async,
-        
-        example_fs*/
-    };
-
-    Storm::GuiApp app;
-    auto guiWindow = std::make_unique<Storm::GuiWindow>();
-    guiWindow->show();
-
-    auto w = Ex::waitable(16).async_wait_on(Ex::Scheduler::static_scheduler()).add([&app, &guiWindow](Ex::WaitableRef) {
-        app.appDispatcher()->invokeAsync([&]() {
-            guiWindow->render();
-        });
-    });
-
-    Storm::CoreThread testthread;
-    testthread.start();
-
-    for (auto e : run_example)
-    {
-        testthread.post(e);
-    }
-
-    Storm::IO::asyncRead(L"G:\\dump\\libcef.dll.pdb", [](Storm::RefPtr<Storm::IO::IOReqeust>& request){
-        std::cout << "status: " << request->status_ << ", sz:" << request->data_.size() << std::endl;
-    });
-
+    PostQuitMessage(0);
+    }, 3000);
 
     app.run();
-    
-    w.dispose();
-  
-    testthread.stop();
-
-    Ex::Scheduler::static_scheduler().stop();
 
     __debug("main") << "quit...";
 
