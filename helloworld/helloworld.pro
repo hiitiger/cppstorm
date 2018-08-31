@@ -13,4 +13,9 @@ HEADERS += more.h
 SOURCES += main.cpp
 SOURCES += more.cpp
 
-INCLUDEPATH += ./c11
+HEADERS += $$files(common/*.h)
+SOURCES += $$files(common/*.cpp)
+
+
+HEADERS += $$files(bookmark/*.h)
+SOURCES += $$files(bookmark/*.cpp)

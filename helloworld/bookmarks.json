@@ -1,0 +1,45 @@
+{
+    "maxId": 8,
+    "root": {
+        "id": "1",
+        "type": "Folder",
+        "name": "root",
+        "uri": "",
+        "parent": "0",
+        "children": [{
+            "id": "2",
+            "type": "Uri",
+            "name": "ts1",
+            "uri": "https://baidu.com",
+            "children": []
+        },
+        {
+            "id": "3",
+            "type": "Uri",
+            "name": "ts2",
+            "uri": "https://google.com",
+            "children": []
+        },
+        {
+            "id": "4",
+            "type": "Folder",
+            "name": "ts3",
+            "uri": "",
+            "children": [{
+                "id": "6",
+                "type": "Uri",
+                "name": "folderb1",
+                "uri": "https://baidu.com",
+                "children": []
+            },
+            {
+                "id": "8",
+                "type": "Uri",
+                "name": "folderb2",
+                "uri": "https://google.com",
+                "children": []
+            }]
+        }
+    ]
+    }
+}
