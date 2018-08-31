@@ -18,17 +18,17 @@ INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
          example_event,
 
-         example_list,*/
+         example_list,
 
-         example_map,
+         example_map,*/
 
-       /*  example_string,
+        example_string,
 
          example_xml,
 
          example_json,
 
-         example_callback,
+         /*         example_callback,
 
         example_thread,
 

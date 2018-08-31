@@ -497,7 +497,7 @@ void example_map()
     auto ix = 0;
     for (int i = 0; i < num; i++)
     {
-        ix + vec[i];
+        ix += vec[i];
     }
 
     {
@@ -662,21 +662,21 @@ void example_xml()
 
 void example_json()
 {
-    using json11::Json;
+    using nlohmann::json;
 
-    Json obj_empty;
+    json obj_empty;
     DAssert(obj_empty.is_null());
-    Json obj_emptyArray = Json::array();
+    json obj_emptyArray = json::array();
     DAssert(obj_emptyArray.size() == 0);
-    DAssert(obj_emptyArray.is_empty());
-    Json obj_emptyObject = Json::object();
+    DAssert(obj_emptyArray.is_array());
+    json obj_emptyObject = json::object();
     DAssert(obj_emptyObject.size() == 0);
-    DAssert(obj_emptyObject.is_empty());
+    DAssert(obj_emptyObject.is_object());
 
-    Json obj{
+    json obj{
         { "k1", "v1" },
         { "k2", 42.0 },
-        { "k3", Json::array{ { "a", 123.0 } } },
+        { "k3",  { "a", 123.0 } },
         { "k4", { {"happy", "no"}, 
                   {"what", {{ "json", true }}}
                }},
@@ -707,13 +707,13 @@ void example_json()
         }
     })";
 
-    Json obj2 = Json::parse(jsonstr, err);
+    json obj2 = json::parse(jsonstr);
 
-    std::string name = obj2["name"].string_value();
+    std::string name = obj2["name"].get<std::string>();
     std::wstring wname = Storm::Utils::fromUtf8(name);
 
     DAssert(wname == L"单机");
-    DAssert(obj2["nod"]["cor"].array_items()[1] == 10);
+    DAssert(obj2["nod"]["cor"][1] == 10);
 }
 
 
