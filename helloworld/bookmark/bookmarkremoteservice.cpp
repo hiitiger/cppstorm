@@ -15,12 +15,11 @@ concurrency::task<std::shared_ptr<BookmarkItem>> BookmarkRemoteService::loadFrom
     | pool([this](WebClient::HttpResponse res) {
         if (res.status == 200)
         {
-            std::string err;
-            auto obj = json11::Json::parse(res.body, err);
-			if (!obj.is_empty())
-			{
-				return this->resolveBookmarks(obj);
-			}
+            auto obj = nlohmann::json::parse(res.body);
+            if (!obj.is_null())
+            {
+                return this->resolveBookmarks(obj);
+            }
         }
 
         return std::shared_ptr<BookmarkItem>();
@@ -47,7 +46,7 @@ concurrency::task<bool> BookmarkRemoteService::add(const std::shared_ptr<Bookmar
         __return false;
     }
 
-    json11::Json postData = {
+    nlohmann::json postData = {
         { "action", "add" },
         { "item", this->toJson(item) },
         { "index", index },
@@ -61,7 +60,7 @@ concurrency::task<bool> BookmarkRemoteService::remove(const std::shared_ptr<Book
 {
     //check item...
 
-    json11::Json postData = {
+    nlohmann::json postData = {
         { "action", "remove" },
         { "item", this->toJson(item) },
     };
@@ -74,7 +73,7 @@ concurrency::task<bool> BookmarkRemoteService::move(const std::shared_ptr<Bookma
 {
     //check parent...
 
-    json11::Json postData = {
+    nlohmann::json postData = {
         { "action", "move" },
         { "item", this->toJson(item) },
         { "modify",{
@@ -90,7 +89,7 @@ concurrency::task<bool> BookmarkRemoteService::setName(const std::shared_ptr<Boo
 {
     //check root...
 
-    json11::Json postData = {
+    nlohmann::json postData = {
         { "action", "modify.name" },
         { "item", this->toJson(item) },
         { "modify",{
@@ -105,7 +104,7 @@ concurrency::task<bool> BookmarkRemoteService::setUri(const std::shared_ptr<Book
 {
     //check type...
 
-    json11::Json postData = {
+    nlohmann::json postData = {
         { "action", "modify.name" },
         { "item", this->toJson(item) },
         { "modify",{
@@ -116,7 +115,7 @@ concurrency::task<bool> BookmarkRemoteService::setUri(const std::shared_ptr<Book
     return res.status == 200;
 }
 
-std::shared_ptr<BookmarkItem> BookmarkRemoteService::resolveBookmarks(json11::Json obj)
+std::shared_ptr<BookmarkItem> BookmarkRemoteService::resolveBookmarks(nlohmann::json obj)
 {
     auto rootObj = obj["root"];
     auto root = resolveBookmarkItem(rootObj, nullptr);
@@ -125,13 +124,13 @@ std::shared_ptr<BookmarkItem> BookmarkRemoteService::resolveBookmarks(json11::Js
     return root;
 }
 
-std::shared_ptr<BookmarkItem> BookmarkRemoteService::resolveBookmarkItem(json11::Json obj, const std::shared_ptr<BookmarkItem>& parent)
+std::shared_ptr<BookmarkItem> BookmarkRemoteService::resolveBookmarkItem(nlohmann::json obj, const std::shared_ptr<BookmarkItem>& parent)
 {
     auto item = std::make_shared<BookmarkItem>();
-    item->id_ = std::stoll(obj["id"].string_value());
-    item->type_ = obj["type"].string_value();
-    item->name_ = obj["name"].string_value();
-    item->uri_ = obj["uri"].string_value();
+    item->id_ = std::stoll(obj["id"].get<std::string>());
+    item->type_ = obj["type"].get<std::string>();
+    item->name_ = obj["name"].get<std::string>();
+    item->uri_ = obj["uri"].get<std::string>();
     item->parent_ = parent.get();
 
     resolveBookmarkChildren(obj, item);
@@ -143,7 +142,7 @@ std::shared_ptr<BookmarkItem> BookmarkRemoteService::resolveBookmarkItem(json11:
     return item;
 }
 
-void BookmarkRemoteService::resolveBookmarkChildren(json11::Json obj, const std::shared_ptr<BookmarkItem>& item)
+void BookmarkRemoteService::resolveBookmarkChildren(nlohmann::json obj, const std::shared_ptr<BookmarkItem>& item)
 {
     auto children = obj["children"];
     if (children.is_array())
@@ -209,9 +208,9 @@ void BookmarkRemoteService::removeItem(const std::shared_ptr<BookmarkItem>& item
     idMap_.erase(idMap_.find(item->id_));
 }
 
-json11::Json BookmarkRemoteService::toJson(const std::shared_ptr<BookmarkItem>& item)
+nlohmann::json BookmarkRemoteService::toJson(const std::shared_ptr<BookmarkItem>& item)
 {
-    json11::Json obj = {
+    nlohmann::json obj = {
         { "id",  std::to_string(item->id_)},
         { "type", item->type_},
         { "name",  item->name_ },
@@ -236,7 +235,7 @@ concurrency::task<WebClient::HttpResponse> BookmarkRemoteService::_get()
     });
 }
 
-concurrency::task<WebClient::HttpResponse> BookmarkRemoteService::_post( json11::Json postData)
+concurrency::task<WebClient::HttpResponse> BookmarkRemoteService::_post(nlohmann::json postData)
 {
     return concurrency_::async([postData, url = this->apiUrl_] {
         WebClient wc;

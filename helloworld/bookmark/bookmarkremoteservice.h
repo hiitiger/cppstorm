@@ -24,21 +24,21 @@ public:
 
 
 private:
-    std::shared_ptr<BookmarkItem> resolveBookmarks(json11::Json obj);
-    std::shared_ptr<BookmarkItem> resolveBookmarkItem(json11::Json obj, const std::shared_ptr<BookmarkItem>& parent);
-    void resolveBookmarkChildren(json11::Json obj, const std::shared_ptr<BookmarkItem>& item);
+    std::shared_ptr<BookmarkItem> resolveBookmarks(nlohmann::json obj);
+    std::shared_ptr<BookmarkItem> resolveBookmarkItem(nlohmann::json obj, const std::shared_ptr<BookmarkItem>& parent);
+    void resolveBookmarkChildren(nlohmann::json obj, const std::shared_ptr<BookmarkItem>& item);
 
     virtual void setupRoot(const std::shared_ptr<BookmarkItem>& root);
     virtual std::shared_ptr<BookmarkItem> rootItem() ;
     virtual void addItem(const std::shared_ptr<BookmarkItem>& item, const std::shared_ptr<BookmarkItem>& parent, int index);
     virtual void removeItem(const std::shared_ptr<BookmarkItem>& item);
 
-    json11::Json toJson(const std::shared_ptr<BookmarkItem>& item);
+    nlohmann::json toJson(const std::shared_ptr<BookmarkItem>& item);
     int64_t nextId();
 
 protected:
     virtual concurrency::task<WebClient::HttpResponse> _get();
-    virtual concurrency::task<WebClient::HttpResponse> _post( json11::Json postData);
+    virtual concurrency::task<WebClient::HttpResponse> _post(nlohmann::json postData);
 
 private:
     std::string apiUrl_;
@@ -67,7 +67,7 @@ protected:
         WebClient::HttpResponse res = { true, 200, contents };
         __return res;
     }
-    virtual concurrency::task<WebClient::HttpResponse> _post(json11::Json postData)
+    virtual concurrency::task<WebClient::HttpResponse> _post(nlohmann::json postData)
     {
         WebClient::HttpResponse res = { true, 200, "" };
         __return res;

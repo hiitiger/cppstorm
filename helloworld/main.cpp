@@ -15,15 +15,15 @@ std::shared_ptr<IBookmarkModel> createDummyModel()
 
 concurrency::task<void> bookmark_run()
 {
-    std::function<json11::Json(std::shared_ptr<BookmarkItem>)> toJson = [&](auto item)
+    std::function<nlohmann::json(std::shared_ptr<BookmarkItem>)> toJson = [&](auto item)
     {
-        std::vector<json11::Json> children;
+        std::vector<nlohmann::json> children;
         for (auto child: item->children_)
         {
             children.push_back(toJson(child));
         }
 
-        std::map<std::string, json11::Json> obj = {
+        std::map<std::string, nlohmann::json> obj = {
             { "id",  std::to_string(item->id_) },
             { "type", item->type_ },
             { "name",  item->name_ },
@@ -34,14 +34,14 @@ concurrency::task<void> bookmark_run()
 
         if (children.size() > 0)
         {
-            obj.insert(std::make_pair("children", json11::Json{ children }));
+            obj.insert(std::make_pair("children", nlohmann::json{ children }));
         }
         return obj;
     };
 
     auto printItem = [=](auto item)
     {
-        json11::Json obj = toJson(item);
+        nlohmann::json obj = toJson(item);
 
         std::cout << obj.dump() << std::endl;
     };
