@@ -7,8 +7,10 @@ LIBS += guilib.lib
 
 include(../config/common.pri)
 
+HEADERS += extest.h
+HEADERS += more.h
+
 SOURCES += main.cpp
-HEADERS += $$files(*.h)
-SOURCES += $$files(*.cpp)
+SOURCES += more.cpp
 
 INCLUDEPATH += ./c11

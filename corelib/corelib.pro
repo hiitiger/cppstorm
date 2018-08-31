@@ -8,8 +8,9 @@ CONFIG += staticlib
 
 include(../config/common.pri)
 
-HEADERS += $$files(*.h)
-SOURCES += $$files(*.cpp)
+HEADERS += class.h
+HEADERS += macro.h
+HEADERS += winheader.h
 
 HEADERS += $$files(third/*.h)
 HEADERS += $$files(third/*.hpp)

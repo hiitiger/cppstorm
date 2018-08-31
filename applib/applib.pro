@@ -6,9 +6,6 @@ CONFIG += staticlib
 
 include(../config/common.pri)
 
-HEADERS += $$files(*.h)
-SOURCES += $$files(*.cpp)
-
 
 HEADERS += $$files(gfxbasic/*.h)
 SOURCES += $$files(gfxbasic/*.cpp)

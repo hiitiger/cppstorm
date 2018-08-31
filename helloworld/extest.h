@@ -683,6 +683,8 @@ void example_json()
         { "k5", nullptr}
       };
 
+    obj["rect"] = { {"x", 123} };
+
     DAssert(obj["k2"] == 42.0);
     DAssert(obj["k3"].is_array());
     DAssert(obj["k3"][1] == 123.0);
