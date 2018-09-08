@@ -15,16 +15,16 @@
 #pragma warning(disable: 4127)
 #include <atlcomtime.h>
 #pragma warning(pop)
-using namespace std;
+//using namespace std;
 
-inline wstring Trim(const wstring &source, const wstring &targets)
+inline std::wstring Trim(const std::wstring &source, const std::wstring &targets)
 {
-    wstring::size_type start = 0;
-    wstring::size_type end = 0;
+    std::wstring::size_type start = 0;
+    std::wstring::size_type end = 0;
     for (start = 0; start < source.size(); start++)
     {
         bool bIsTarget = false;
-        for (wstring::size_type i = 0; i < targets.size(); i++)
+        for (std::wstring::size_type i = 0; i < targets.size(); i++)
         {
             if (source[start] == targets[i])
             {
@@ -40,7 +40,7 @@ inline wstring Trim(const wstring &source, const wstring &targets)
     for (end = source.size() - 1; (int)end >= 0; end--)
     {
         bool bIsTarget = false;
-        for (wstring::size_type i = 0; i < targets.size(); i++)
+        for (std::wstring::size_type i = 0; i < targets.size(); i++)
         {
             if (source[end] == targets[i])
             {
@@ -53,7 +53,7 @@ inline wstring Trim(const wstring &source, const wstring &targets)
             break;
         }
     }
-    wstring result = L"";
+    std::wstring result = L"";
     if (end >= start && start < source.size() && end >= 0)
     {
         result = source.substr(start, end-start+1);
@@ -62,7 +62,7 @@ inline wstring Trim(const wstring &source, const wstring &targets)
     return result;
 }
 
-inline bool PrepareString(wchar_t *dest, size_t *size, const wstring &src)
+inline bool PrepareString(wchar_t *dest, size_t *size, const std::wstring &src)
 {
     if (dest == NULL)
     {
@@ -87,16 +87,16 @@ inline bool PrepareString(wchar_t *dest, size_t *size, const wstring &src)
     return true;
 }
 
-inline wstring ReplaceString(const wstring &srcStr, const wstring &oldStr, const wstring &newStr)
+inline std::wstring ReplaceString(const std::wstring &srcStr, const std::wstring &oldStr, const std::wstring &newStr)
 {
     if (srcStr.size() <= 0 || oldStr.size() <= 0)
     {
         return srcStr;
     }
-    wstring strReturn = srcStr;
-    wstring::size_type offset = 0;
-    wstring::size_type start = strReturn.find(oldStr);
-    while (start != wstring::npos)
+    std::wstring strReturn = srcStr;
+    std::wstring::size_type offset = 0;
+    std::wstring::size_type start = strReturn.find(oldStr);
+    while (start != std::wstring::npos)
     {
         offset = start + newStr.size();
         strReturn.replace(start, oldStr.size(), newStr);
@@ -106,19 +106,19 @@ inline wstring ReplaceString(const wstring &srcStr, const wstring &oldStr, const
     return strReturn;
 }
 
-inline int StringToInteger(const wstring &number)
+inline int StringToInteger(const std::wstring &number)
 {
     if (number.size() <= 0)
     {
         return 0;
     }
-    wstring num = ReplaceString(number, L",", L"");
+    std::wstring num = ReplaceString(number, L",", L"");
     num = ReplaceString(num, L" ", L"");
 
     return _wtoi(num.c_str());
 }
 
-inline wstring LowerString(const wstring &text)
+inline std::wstring LowerString(const std::wstring &text)
 {
     if (text.size() <= 0)
     {
@@ -132,13 +132,13 @@ inline wstring LowerString(const wstring &text)
     }
     wcscpy_s(pTemp, iLength, text.c_str());
     _wcslwr_s(pTemp, iLength);
-    wstring retStr = pTemp;
+    std::wstring retStr = pTemp;
     delete[] pTemp;
 
     return retStr;
 }
 
-inline wstring UpperString(const wstring &text)
+inline std::wstring UpperString(const std::wstring &text)
 {
     if (text.size() <= 0)
     {
@@ -152,39 +152,39 @@ inline wstring UpperString(const wstring &text)
     }
     wcscpy_s(pTemp, iLength, text.c_str());
     _wcsupr_s(pTemp, iLength);
-    wstring retStr = pTemp;
+    std::wstring retStr = pTemp;
     delete[] pTemp;
 
     return retStr;
 }
 
-inline wstring GetAnchorText(const wstring &anchor)
+inline std::wstring GetAnchorText(const std::wstring &anchor)
 {
-    wstring regExp = L"<a.*?>[ \t\r\n]*{.*?}[ \t\r\n]*</a>";
-    vector<wstring> result;
+    std::wstring regExp = L"<a.*?>[ \t\r\n]*{.*?}[ \t\r\n]*</a>";
+    std::vector<std::wstring> result;
     if (ParseRegExp(regExp, false, 1, anchor, result) && result.size() == 1)
     {
-        wstring text = result[0];
+        std::wstring text = result[0];
         return text;
     }
 
     return L"";
 }
 
-inline wstring GetAnchorLink(const wstring &anchor)
+inline std::wstring GetAnchorLink(const std::wstring &anchor)
 {
-    wstring regExp = L"<a.*?href=\"|\'{.*?}\"|\'.*?>.*?</a>";
-    vector<wstring> result;
+    std::wstring regExp = L"<a.*?href=\"|\'{.*?}\"|\'.*?>.*?</a>";
+    std::vector<std::wstring> result;
     if (ParseRegExp(regExp, false, 1, anchor, result) && result.size() == 1)
     {
-        wstring link = result[0];
+        std::wstring link = result[0];
         return link;
     }
 
     return L"";
 }
 
-inline bool SeparateString(const wstring &content, const wstring &delimiter, vector<wstring> &result)
+inline bool SeparateString(const std::wstring &content, const std::wstring &delimiter, std::vector<std::wstring> &result)
 {
     if (content.size() <= 0 || delimiter.size() <= 0)
     {
@@ -192,15 +192,15 @@ inline bool SeparateString(const wstring &content, const wstring &delimiter, vec
     }
 
     result.clear();
-    wstring::size_type start = 0;
-    wstring::size_type index = 0;
+    std::wstring::size_type start = 0;
+    std::wstring::size_type index = 0;
     index = content.find(delimiter, start);
-    while (index != wstring::npos)
+    while (index != std::wstring::npos)
     {
-        wstring::size_type size = index - start;
+        std::wstring::size_type size = index - start;
         if (size > 0)
         {
-            wstring temp = content.substr(start, size);
+            std::wstring temp = content.substr(start, size);
             if (temp.size() > 0)
             {
                 result.push_back(temp);
@@ -209,9 +209,9 @@ inline bool SeparateString(const wstring &content, const wstring &delimiter, vec
         start  += size + delimiter.size();
         index = content.find(delimiter, start);
     }
-    if (content.find(delimiter) != wstring::npos)
+    if (content.find(delimiter) != std::wstring::npos)
     {
-        wstring last = content.substr(start);
+        std::wstring last = content.substr(start);
         if (last.size() > 0)
         {
             result.push_back(last);
@@ -225,7 +225,7 @@ inline bool SeparateString(const wstring &content, const wstring &delimiter, vec
     return true;
 }
 
-inline wstring URLEncoding(const wstring &keyword, bool convertToUTF8 = true)
+inline std::wstring URLEncoding(const std::wstring &keyword, bool convertToUTF8 = true)
 {
     int iLength = 0;
     char *szKeyword = NULL;
@@ -261,14 +261,14 @@ inline wstring URLEncoding(const wstring &keyword, bool convertToUTF8 = true)
     }
     else
     {
-        string strKeyword = (char *)(_bstr_t)keyword.c_str();
+        std::string strKeyword = (char *)(_bstr_t)keyword.c_str();
         iLength = (int)strKeyword.length();
         szKeyword = new char[strKeyword.length() + 1];
         strcpy_s(szKeyword, strKeyword.length() + 1, strKeyword.c_str());
     }
 
-    wstring encodedKeyword = L"";
-    string strEncodedKeyword = "";
+    std::wstring encodedKeyword = L"";
+    std::string strEncodedKeyword = "";
     for (int i = 0; i < iLength; i++)
     {
         unsigned char c = (unsigned char)szKeyword[i];
@@ -290,20 +290,20 @@ inline wstring URLEncoding(const wstring &keyword, bool convertToUTF8 = true)
     return encodedKeyword;
 }
 
-inline unsigned int GetSeparateKeywordMatchGrade(const wstring &source, const wstring &keyword)
+inline unsigned int GetSeparateKeywordMatchGrade(const std::wstring &source, const std::wstring &keyword)
 {
     if (source.length() <= 0 || keyword.length() <= 0)
     {
         return 0;
     }
 
-    wstring lowerSource = LowerString(source);
-    wstring lowerKeyword = LowerString(keyword);
+    std::wstring lowerSource = LowerString(source);
+    std::wstring lowerKeyword = LowerString(keyword);
 
     unsigned int grade = 0;
     if (lowerKeyword.length() <= 3)
     {
-        if (lowerSource.find(lowerKeyword) != wstring::npos)
+        if (lowerSource.find(lowerKeyword) != std::wstring::npos)
         {
             grade = 100;
         }
@@ -321,8 +321,8 @@ inline unsigned int GetSeparateKeywordMatchGrade(const wstring &source, const ws
             unsigned int compareLength = lowerKeyword.length() - index;
             while (compareLength > 0 && index < lowerKeyword.length())
             {
-                wstring subKeyword = lowerKeyword.substr(index, compareLength);
-                if (lowerSource.find(subKeyword) != wstring::npos)
+                std::wstring subKeyword = lowerKeyword.substr(index, compareLength);
+                if (lowerSource.find(subKeyword) != std::wstring::npos)
                 {
                     matchLength += compareLength;
                     index += compareLength;
@@ -340,7 +340,7 @@ inline unsigned int GetSeparateKeywordMatchGrade(const wstring &source, const ws
     return grade;
 }
 
-inline unsigned int GetKeywordMatchGrade(const wstring &source, const wstring & keyword)
+inline unsigned int GetKeywordMatchGrade(const std::wstring &source, const std::wstring & keyword)
 {
     if (source.length() <= 0 || keyword.length() <= 0)
     {
@@ -348,24 +348,24 @@ inline unsigned int GetKeywordMatchGrade(const wstring &source, const wstring & 
     }
 
     unsigned int grade = 0;
-    wstring src = source;
-    while (src.find(L"\t") != wstring::npos)
+    std::wstring src = source;
+    while (src.find(L"\t") != std::wstring::npos)
     {
         src = ReplaceString(src, L"\t", L" ");
     }
-    while (src.find(L"  ") != wstring::npos)
+    while (src.find(L"  ") != std::wstring::npos)
     {
         src = ReplaceString(src, L"  ", L" ");
     }
-    vector<wstring> results;
+    std::vector<std::wstring> results;
     if (SeparateString(keyword, L" ", results) && results.size() > 0)
     {
         unsigned int keywordTotalLength = 0;
-        for (vector<wstring>::size_type index = 0; index < results.size(); index++)
+        for (std::vector<std::wstring>::size_type index = 0; index < results.size(); index++)
         {
             keywordTotalLength += results[index].length();
         }
-        for (vector<wstring>::size_type index = 0; index < results.size(); index++)
+        for (std::vector<std::wstring>::size_type index = 0; index < results.size(); index++)
         {
             grade += GetSeparateKeywordMatchGrade(src, results[index]) * results[index].length() / keywordTotalLength;
         }
@@ -378,9 +378,9 @@ inline unsigned int GetKeywordMatchGrade(const wstring &source, const wstring & 
     return grade;
 }
 
-inline wstring GetDateString(const COleDateTime &time, const wstring &separator = L"-", bool align = true)
+inline std::wstring GetDateString(const COleDateTime &time, const std::wstring &separator = L"-", bool align = true)
 {
-    wstring date = L"";
+    std::wstring date = L"";
     wchar_t szTemp[MAX_PATH] = L"";
 
     swprintf_s(szTemp, MAX_PATH, L"%d", time.GetYear());
@@ -407,7 +407,7 @@ inline wstring GetDateString(const COleDateTime &time, const wstring &separator 
     return date;
 }
 
-inline wstring GetDateString(int dayOffset, const wstring &separator = L"-", bool align = true)
+inline std::wstring GetDateString(int dayOffset, const std::wstring &separator = L"-", bool align = true)
 {
     COleDateTime time = COleDateTime::GetCurrentTime();
     time += COleDateTimeSpan(dayOffset, 0, 0, 0);
@@ -415,9 +415,9 @@ inline wstring GetDateString(int dayOffset, const wstring &separator = L"-", boo
     return GetDateString(time, separator, align);
 }
 
-inline wstring GetTimeString(const COleDateTime &time, const wstring &separator = L":", bool align = true)
+inline std::wstring GetTimeString(const COleDateTime &time, const std::wstring &separator = L":", bool align = true)
 {
-    wstring date = L"";
+    std::wstring date = L"";
     wchar_t szTemp[MAX_PATH] = L"";
 
     swprintf_s(szTemp, MAX_PATH, L"%d", time.GetHour());
@@ -444,14 +444,14 @@ inline wstring GetTimeString(const COleDateTime &time, const wstring &separator 
     return date;
 }
 
-inline wstring MD5(const wstring &text)
+inline std::wstring MD5(const std::wstring &text)
 {
     if (text.size() <= 0)
     {
         return L"";
     }
-    string asciiText = (char *)(_bstr_t)text.c_str();
-    wstring encrypted = L"";
+    std::string asciiText = (char *)(_bstr_t)text.c_str();
+    std::wstring encrypted = L"";
     HCRYPTPROV hCryptProv = NULL;
     if (::CryptAcquireContext(&hCryptProv, NULL, NULL, PROV_RSA_FULL, CRYPT_VERIFYCONTEXT | CRYPT_MACHINE_KEYSET))
     {
@@ -481,14 +481,14 @@ inline wstring MD5(const wstring &text)
     return encrypted;
 }
 
-inline wstring FilterFileName(const wstring &name)
+inline std::wstring FilterFileName(const std::wstring &name)
 {
     if (name.size() <= 0)
     {
         return L"";
     }
 
-    wstring filteredName = name;
+    std::wstring filteredName = name;
     filteredName = ReplaceString(filteredName, L"/", L"_");
     filteredName = ReplaceString(filteredName, L"\\", L"_");
     filteredName = ReplaceString(filteredName, L":", L"_");
@@ -502,7 +502,7 @@ inline wstring FilterFileName(const wstring &name)
     return filteredName;
 }
 
-inline wstring GetMagic(unsigned int length)
+inline std::wstring GetMagic(unsigned int length)
 {
     srand(::GetTickCount());
     if (length <= 0)
@@ -510,7 +510,7 @@ inline wstring GetMagic(unsigned int length)
         return L"";
     }
 
-    wstring margic = L"";
+    std::wstring margic = L"";
     for (unsigned int i = 0; i < length; i++)
     {
         wchar_t szMargic[50] = L"";
@@ -521,21 +521,21 @@ inline wstring GetMagic(unsigned int length)
     return margic;
 }
 
-inline wstring GetHost(const wstring &url)
+inline std::wstring GetHost(const std::wstring &url)
 {
     if (url.size() <= 0)
     {
         return L"";
     }
 
-    wstring urlWidthoutHttp = ReplaceString(LowerString(url), L"http://", L"");
+    std::wstring urlWidthoutHttp = ReplaceString(LowerString(url), L"http://", L"");
 
     unsigned int index = urlWidthoutHttp.find(L"/");
-    if (index == wstring::npos)
+    if (index == std::wstring::npos)
     {
         index = urlWidthoutHttp.find(L"\\");
     }
-    if (index == wstring ::npos)
+    if (index == std::wstring ::npos)
     {
         return urlWidthoutHttp;
     }
@@ -543,13 +543,13 @@ inline wstring GetHost(const wstring &url)
     return urlWidthoutHttp.substr(0, index);
 }
 
-inline wstring GetValidFileName(const wstring &fileName)
+inline std::wstring GetValidFileName(const std::wstring &fileName)
 {
     if (fileName.size() == 0)
     {
         return L"";
     }
-    wstring tempFileName = fileName;
+    std::wstring tempFileName = fileName;
     tempFileName = ReplaceString(tempFileName, L"\\", L"_");
     tempFileName = ReplaceString(tempFileName, L"/", L"_");
     tempFileName = ReplaceString(tempFileName, L":", L"_");

@@ -10,7 +10,7 @@ namespace Storm
 
         Point()
         {
-            point_.assign(T());
+            point_.fill(T());
         }
 
         Point(const Point& other)
@@ -332,7 +332,7 @@ namespace Storm
 
         Rect()
         {
-            rect_.assign(T());
+            rect_.fill(T());
         }
 
         Rect(const Rect& other)

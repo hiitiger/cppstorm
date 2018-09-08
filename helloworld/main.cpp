@@ -1,7 +1,8 @@
 #include "stable.h"
 #include "bookmark/bookmarkremoteservice.h"
 #include "bookmark/bookmarkmodel.h"
-
+#include "extest.h"
+#include "json2.h"
 
 std::shared_ptr<IBookmarkModel> createDummyModel()
 {
@@ -82,18 +83,22 @@ INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
     __debug("main") << "starting...";
 
 
+   // example_event();
+
     Storm::App app;
 
     bookmark_run();
 
     DbgWarn << "Quit after 3secs";
 
-    AppUI::asyncDelayed([]() {
+    //AppUI::asyncDelayed([]() {
 
-    trace::DebugConsole::releaseDebugConsole();
+    //trace::DebugConsole::releaseDebugConsole();
 
-    PostQuitMessage(0);
-    }, 3000);
+    //PostQuitMessage(0);
+    //}, 3000);
+
+    func();
 
     app.run();
 

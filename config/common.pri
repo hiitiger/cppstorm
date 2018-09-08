@@ -1,6 +1,7 @@
 
 CONFIG -= qt
 CONFIG += c++11
+CONFIG += c++17
 
 PRECOMPILED_HEADER = stable.h
 
@@ -21,3 +22,4 @@ OBJECTS_DIR = ../bin/objdir/$(ProjectName)/$(Configuration)
 DEFINES += STORM_CORE_STATIC
 
 QMAKE_CXXFLAGS += /await
+QMAKE_CXXFLAGS += /std:c++latest

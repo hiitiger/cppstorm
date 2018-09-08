@@ -40,7 +40,7 @@ inline WebClient::HttpResponse WebClient::post(const std::string& url, const std
     client.SetAdditionalDataToSend((BYTE *)postData.c_str(), postData.size());
 
     // Set request headers.
-    wstring headers = L"Content-Length: ";
+    std::wstring headers = L"Content-Length: ";
     headers += std::to_wstring(postData.size());
     headers += L"\r\nContent-Type: ";
     headers += Storm::Utils::fromUtf8(type);

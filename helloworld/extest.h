@@ -161,63 +161,63 @@ void example_refcount()
 void example_event()
 {
 
-    auto foo = Storm::refThis(new Foo);
-    foo->tsignal.add([&](Foo* sender, int a, int b) {
+    //auto foo = Storm::refThis(new Foo);
+    //foo->tsignal.add([&](Foo* sender, int a, int b) {
 
-        std::cout << "\n event listener, thread id: " << std::this_thread::get_id() << ", sender: " << sender << ",a:" << a << ", b:" << b << std::endl;
-        return a - b;
-    });
+    //    std::cout << "\n event listener, thread id: " << std::this_thread::get_id() << ", sender: " << sender << ",a:" << a << ", b:" << b << std::endl;
+    //    return a - b;
+    //});
  
-    {
-        FooTrackable fooTrack;
-        foo->tsignal.add(&FooTrackable::onSignal1, &fooTrack);
-        foo->tsignal.add(&FooTrackable::onSignal2, &fooTrack);
+    //{
+    //    FooTrackable fooTrack;
+    //    foo->tsignal.add(&FooTrackable::onSignal1, &fooTrack);
+    //    foo->tsignal.add(&FooTrackable::onSignal2, &fooTrack);
 
-        foo->tsignal(foo, 1, 1);
-    }
+    //    foo->tsignal(foo, 1, 1);
+    //}
 
-    foo->tsignal(foo, 2, 2);
+    //foo->tsignal(foo, 2, 2);
 
-    {
-        FooTrackable fooTrack;
-        foo->tsignal.add(&FooTrackable::onSignal1, &fooTrack);
-        auto conn = foo->tsignal.add(&FooTrackable::onSignal2, &fooTrack);
+    //{
+    //    FooTrackable fooTrack;
+    //    foo->tsignal.add(&FooTrackable::onSignal1, &fooTrack);
+    //    auto conn = foo->tsignal.add(&FooTrackable::onSignal2, &fooTrack);
 
-        foo->tsignal2.add(&FooTrackable::onSignal1, &fooTrack);
-        foo->tsignal2.add(&FooTrackable::onSignal2, &fooTrack);
+    //    foo->tsignal2.add(&FooTrackable::onSignal1, &fooTrack);
+    //    foo->tsignal2.add(&FooTrackable::onSignal2, &fooTrack);
 
-        foo->tsignal(foo, 3, 3);
-        foo->tsignal2(foo, 223, 223);
-       // foo->tsignal.removeTrackable(&fooTrack);
-        conn.disconnect();
-        foo->tsignal(foo, 123, 123);
-        foo->tsignal2(foo, 223, 223);
+    //    foo->tsignal(foo, 3, 3);
+    //    foo->tsignal2(foo, 223, 223);
+    //   // foo->tsignal.removeTrackable(&fooTrack);
+    //    conn.disconnect();
+    //    foo->tsignal(foo, 123, 123);
+    //    foo->tsignal2(foo, 223, 223);
 
-    }
+    //}
 
-    foo->tsignal(foo, 100, 100);
+    //foo->tsignal(foo, 100, 100);
 
-    auto callback = Storm::delegate(&cac_punch);
-    std::cout << "\n callback: " << callback(10, 10);
+    //auto callback = Storm::delegate(&cac_punch);
+    //std::cout << "\n callback: " << callback(10, 10);
 
-    auto callback2 = Storm::delegate([](int x, int y) {
-        return x * y + 100;
-    });
+    //auto callback2 = Storm::delegate([](int x, int y) {
+    //    return x * y + 100;
+    //});
 
-    auto recCallback2 = Storm::Delegate<int(int, int)>(callback2);
-    std::cout << "\n callback2 res: " << recCallback2(10, 10);
+    //auto recCallback2 = Storm::Delegate<int(int, int)>(callback2);
+    //std::cout << "\n callback2 res: " << recCallback2(10, 10);
 
-    auto callback3 = Storm::delegate(&Foo::foo3, foo.get());
-    std::cout << "\n callback3 res: " << callback3(10, "Hello invoker");
+    //auto callback3 = Storm::delegate(&Foo::foo3, foo.get());
+    //std::cout << "\n callback3 res: " << callback3(10, "Hello invoker");
 
-    auto callback4 = Storm::delegate([=](int x, int y) {
-        return x * y + callback2(x, y);
-    });
+    //auto callback4 = Storm::delegate([=](int x, int y) {
+    //    return x * y + callback2(x, y);
+    //});
 
-    std::cout << "\n callback4 res: " << callback4(10, 10);
+    //std::cout << "\n callback4 res: " << callback4(10, 10);
 
-    callback = callback2;
-    std::cout << "\n callback: " << callback(10, 10);
+    //callback = callback2;
+    //std::cout << "\n callback: " << callback(10, 10);
 
 
 
@@ -919,10 +919,10 @@ void example_bind()
     auto callback = std::bind(&AsyncOperation::operator(), wpAsynOp); 
     callback();*/
 
-    auto callback = std::mem_fun(&AsyncOperation::operator());
+  /*  auto callback = std::bind(&AsyncOperation::operator());
     callback(spAsynOp.get());
     std::cout << "spAsyncOP use count after std bind: " << spAsynOp.use_count() << std::endl;
-
+*/
     auto callback2 = Storm::bind(&AsyncOperation::operator());
     callback2(spAsynOp.get());
     std::cout << "spAsyncOP use count after storm bind: " << spAsynOp.use_count() << std::endl;

@@ -28,7 +28,7 @@ namespace Storm
     {
         if (renderType == Direct2DRenderer)
         {
-            std::auto_ptr<Direct2DAdpater> gfx(new Direct2DAdpater);
+            std::unique_ptr<Direct2DAdpater> gfx(new Direct2DAdpater);
             if (gfx->setup())
             {
                 gfxAdpater_.reset(gfx.release());
@@ -36,7 +36,7 @@ namespace Storm
         }
         else if(renderType == Direct2DRendererHWND)
         {
-            std::auto_ptr<Direct2DHWNDAdpater> gfx(new Direct2DHWNDAdpater);
+            std::unique_ptr<Direct2DHWNDAdpater> gfx(new Direct2DHWNDAdpater);
             if (gfx->setup())
             {
                 gfxAdpater_.reset(gfx.release());
