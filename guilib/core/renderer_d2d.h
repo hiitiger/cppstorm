@@ -169,7 +169,7 @@ namespace Storm
 
         virtual void drawText(const std::wstring& text, const Storm::RectF& rect)
         {
-            renderTarget()->DrawTextW(text.c_str(), text.length(), textFormat_, toD2D1RectF(rect), colorBrush_, D2D1_DRAW_TEXT_OPTIONS_CLIP);
+            renderTarget()->DrawTextW(text.c_str(), static_cast<uint32_t>(text.length()), textFormat_, toD2D1RectF(rect), colorBrush_, D2D1_DRAW_TEXT_OPTIONS_CLIP);
         }
 
         virtual void drawText(const std::wstring& text, const Storm::RectF& rect, const Storm::Font& font)
