@@ -3,8 +3,6 @@ bin
 .vs
 .vscode
 .qmake.stash
-*.sln
-*.vcxproj
 *.vcxproj.*
 Objdir
 build.bat
