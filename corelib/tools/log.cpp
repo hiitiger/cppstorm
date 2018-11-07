@@ -54,13 +54,14 @@ public:
     ~Logger()
     {
         k_logQuit = true;
-        cv_.notify_one();
-        thread_.join();
+        //cv_.notify_one();
+        //thread_.join();
     }
 
     void start()
     {
         thread_ = std::thread([this] { _logThread(); });
+        thread_.detach();
        
         addLog(MOD_CORELIB, __FILE__, __FUNCTION__, __LINE__, L"Start...");
     }
@@ -128,7 +129,8 @@ private:
                 std::unique_lock<std::mutex> lock(logLock_);
                 while (!k_logQuit && logItems_.empty())
                 {
-                    cv_.wait(lock);
+                    using namespace std::chrono_literals;
+                    cv_.wait_for(lock, 5000ms);
                 }
 
                 logItems.swap(logItems_);

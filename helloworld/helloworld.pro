@@ -16,6 +16,7 @@ SOURCES += more.cpp
 HEADERS += $$files(common/*.h)
 SOURCES += $$files(common/*.cpp)
 
+HEADERS += $$files(cpp-go-chan/*.h)
 
 HEADERS += $$files(bookmark/*.h)
 SOURCES += $$files(bookmark/*.cpp)

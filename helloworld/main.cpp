@@ -3,6 +3,7 @@
 #include "bookmark/bookmarkmodel.h"
 #include "extest.h"
 #include "json2.h"
+#include "cpp-go-chan/chan.h"
 
 std::shared_ptr<IBookmarkModel> createDummyModel()
 {
@@ -72,6 +73,73 @@ concurrency::task<void> bookmark_run()
 }
 
 
+volatile int wc = 0;
+volatile int rc = 0;
+
+concurrency::task<void> writeChann(std::shared_ptr<ChanQueue<std::string>> chan, int x)
+{
+    using namespace std::chrono_literals;
+    for (int i = 1; i <= 10; ++i)
+    {
+        __await chan->write(std::to_string(i + x));
+        wc += 1;
+        AppUI::async([=]() {
+            DbgWarn << "write: " << i + x;
+        });
+    }
+
+    AppUI::async([=]() {
+        DbgOk << "write  finished " << "x=" << x;
+    });
+
+    __return;
+}
+
+concurrency::task<void> readChann(std::shared_ptr<ChanQueue<std::string>> chan, int r)
+{
+    using namespace std::chrono_literals;
+    std::this_thread::sleep_for(1000ms);
+    for (int i = 1; i <= 10; ++i)
+    {
+        auto d = __await chan->read();
+        rc += 1;
+        AppUI::async([=]() {
+            DbgOk<< "read: " << d << ", i=" << i;
+        });
+    }
+
+    AppUI::async([=]() {
+        DbgError << "read  finished " << "r=" << r;
+    });
+    __return;
+}
+
+
+concurrency::task<void> runChan(std::shared_ptr<ChanQueue<std::string>> chan)
+{
+    auto w1 = concurrency_::async([chan]() {
+        writeChann(chan, 1000);
+    });
+
+    auto w2 = concurrency_::delayed(40)
+            | concurrency_::pool([chan]() {
+        writeChann(chan, 2000);
+    });
+
+    __await (w1 && 
+            w2 &&
+            concurrency_::delayed(20) | concurrency_::ui([chan]() {readChann(chan, 1); }) &&
+            concurrency_::delayed(30) | concurrency_::pool([chan]() {readChann(chan, 2); }));
+
+    AppUI::asyncDelayed([]() {
+
+        LOGGER("main") << "will quit..";
+
+        trace::DebugConsole::releaseDebugConsole();
+        PostQuitMessage(0);
+    }, 1000);
+}
+
 
 INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nShowCmd)
 {
@@ -83,22 +151,12 @@ INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
     __debug("main") << "starting...";
 
 
-   // example_event();
-
     Storm::App app;
 
-    bookmark_run();
+    auto chan = std::make_shared<ChanQueue<std::string>>();
 
-    DbgWarn << "Quit after 3secs";
+    runChan(chan);
 
-    //AppUI::asyncDelayed([]() {
-
-    //trace::DebugConsole::releaseDebugConsole();
-
-    //PostQuitMessage(0);
-    //}, 3000);
-
-    func();
 
     app.run();
 

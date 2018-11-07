@@ -292,6 +292,7 @@
     <ClInclude Include="bookmark\bookmark_i.h" />
     <ClInclude Include="bookmark\bookmarkmodel.h" />
     <ClInclude Include="bookmark\bookmarkremoteservice.h" />
+    <ClInclude Include="cpp-go-chan\chan.h" />
     <ClInclude Include="extest.h" />
     <ClInclude Include="more.h" />
     <CustomBuild Include="stable.h">
