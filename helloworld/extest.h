@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-class Foo : public Storm::RefCounted
+class Foo : public Storm::CoreObject
 {
 public:
     ~Foo() {
@@ -22,9 +22,9 @@ public:
         std::cout << "\n foo x:" << x << ", str:" << str;
     }
 
-    int foo3(int x, std::string str) const
+    void foo3(int x, std::string str) 
     {
-        return x * str.length();
+        std::cout <<  x * str.length() << std::endl;
     }
 
     Storm::Event<int(Foo*, int, int)> tsignal;
@@ -134,28 +134,6 @@ int cac_punch(int x, int y)
     return x * y;
 }
 
-
-void example_refcount()
-{
-    Storm::RefPtr<Foo> ptr;
-
-    std::cout << "ref count: " << ptr.refCount()<< std::endl;
-
-    ptr = (new Foo());
-    std::cout << "ref count: " << ptr.refCount()<< std::endl;
-
-    Storm::WeakRefPtr<Foo> weakRefPtr = ptr;
-
-    Storm::WeakRefPtr<Storm::RefCounted> weakRefPtr2 = std::move(weakRefPtr);
-
-    weakRefPtr = ptr.get();
-
-    std::cout << std::boolalpha << weakRefPtr.isValid() << std::endl;
-
-    ptr.reset();
-
-    std::cout << std::boolalpha << weakRefPtr2.isValid() << std::endl;
-}
 
 
 void example_event()
@@ -320,20 +298,15 @@ void example_callback()
         Storm::Callback<int()> cb3 = Storm::bind(cac_punch, 10, 18);
         std::cout << "cb3: " << cb3() << std::endl;
 
-        auto foo = Storm::refThis(new Foo);
-        auto d = Storm::delegate(&Foo::foo3, foo.get());
-        auto cb4 = Storm::bind(&Foo::foo3, foo, 10);
+        auto foo = new Foo;
+        auto cb4 = Storm::bind(&Foo::foo3, Storm::WeakObjectPtr<Foo>(foo), 10);
         auto cb5 = Storm::bind(cb4, "cb foo");
-        std::cout << "cb5: " << cb5() << std::endl;
+        cb5();
+
+        delete foo;
 
         auto cbf = std::bind(cb5);
         cbf();
-
-        Storm::Callback<int(int)> cb6 = Storm::bind(cac_punch, 10);
-        Storm::Callback<int(int)> cb7 = Storm::bind(cac_punch, 10);
-
-        DAssert(cb6 != cb7);
-        DAssert(cb6.isSameCallee(cb7));
 
     }
 
@@ -343,9 +316,6 @@ void example_callback()
         spDelegate();
 
         auto spCallback1 = Storm::bind(&AbstractBB::show, spCirclrBB);
-        auto spCallback2 = Storm::bind(&AbstractBB::show, spCirclrBB);
-        DAssert(spCallback1 != spCallback2);
-        DAssert(spCallback1.isSameCallee(spCallback2));
 
         spCallback1(10);
     }

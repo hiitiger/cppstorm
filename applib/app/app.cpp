@@ -130,16 +130,7 @@ namespace Storm {
     void App::run()
     {
         state_ = E_Running;
-        while (state_ == E_Running)
-        {
-            if (state_ == E_Running)
-                runLoop_->runOnce();
-            if (state_ == E_Running)
-                onFrame();
-            if (state_ == E_Running)
-                runLoop_->tryIdleWait();
-        }
-
+        runLoop();
         onQuit();
         appThread_->stopped();
         state_ = E_Quited;
@@ -166,6 +157,19 @@ namespace Storm {
     ThreadDispatcherPtr App::appDispatcher()
     {
         return appThread_->threadDispatcher();
+    }
+
+    void App::runLoop()
+    {
+        while (state_ == E_Running)
+        {
+            if (state_ == E_Running)
+                runLoop_->runOnce();
+            if (state_ == E_Running)
+                onFrame();
+            if (state_ == E_Running)
+                runLoop_->tryIdleWait();
+        }
     }
 
     void App::onSysQuitRecived(CoreRunloop*)

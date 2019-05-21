@@ -307,7 +307,6 @@
     <ClInclude Include="third\pugiconfig.hpp" />
     <ClInclude Include="third\pugixml.hpp" />
     <ClInclude Include="third\rang.h" />
-    <ClInclude Include="memory\refcounted.h" />
     <ClInclude Include="thread\rwlock.h" />
     <ClInclude Include="ex\schedule.h" />
     <ClInclude Include="thread\semaphore.h" />

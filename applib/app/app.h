@@ -23,13 +23,14 @@ namespace Storm
         void postDelayed(const Callback0& func, int milliSeconds);
         void postDelayed(Callback0&&, int milliSeconds);
 
-        virtual void run();
+        void run();
         virtual void quit();
 
         std::thread::id threadId();
         ThreadDispatcherPtr appDispatcher();
 
     protected:
+        virtual void runLoop();
         virtual void onSysQuitRecived(CoreRunloop*);
         virtual void onFrame();
         virtual void onQuit();

@@ -140,7 +140,6 @@ concurrency::task<void> runChan(std::shared_ptr<ChanQueue<std::string>> chan)
     }, 1000);
 }
 
-
 INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nShowCmd)
 {
     (void)hInstance; (void)hPrevInstance; (void)lpCmdLine; (void)nShowCmd;
@@ -153,9 +152,7 @@ INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
     Storm::App app;
 
-    auto chan = std::make_shared<ChanQueue<std::string>>();
-
-    runChan(chan);
+    example_callback();
 
 
     app.run();
