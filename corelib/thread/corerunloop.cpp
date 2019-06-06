@@ -262,7 +262,12 @@ void CoreRunloop::scheduleDelayed(TimeTick runTime)
 
     if (msecs <= 0)
     {
-        scheduleWork();
+        runDelayQueue();
+        if (!nextDelay_.isNull())
+        {
+            runTime = nextDelay_;
+            scheduleDelayed(runTime);
+        }
     }
     else
     {
