@@ -297,6 +297,11 @@ void CoreRunloop::processSystemMessage()
 
         TranslateMessage(&msg);
         DispatchMessage(&msg);
+
+        if (!running_)
+        {
+            break;
+        }
     }
 }
 }

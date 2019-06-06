@@ -94,7 +94,9 @@ private:
             fs << item->datetime;
 
             memset(header, 0, sizeof(char) * HEADER_SIZE);
-            sprintf_s(header, HEADER_SIZE, " mod:%s,file:%s,function:%s,line:%d,log:", item->mod, item->file, item->function, item->line);
+
+            sprintf_s(header, HEADER_SIZE, " [%s][%s:%s@:%d] ", item->mod, item->file, item->function, item->line);
+
             fs << header;
 
             std::string content = Utils::toUtf8(item->data.c_str(), static_cast<int>(item->data.size()));
