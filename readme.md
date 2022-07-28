@@ -4,7 +4,8 @@
 
 
 ## usage
-* need VS2017 or later
-* use qmake for project configuration
+* need MSVC2019 or later
+* some part is just experiment
+* been used in several projects that sum up to 100M users
 
 

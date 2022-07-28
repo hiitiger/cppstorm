@@ -235,14 +235,16 @@ namespace Storm{
     {
         pugi::xml_document xmlDoc;
         saveToXmlDoc(xmlDoc, this);
-        xmlDoc.save(xmlwriter_wchar(wstr), L"\t", pugi::format_default, pugi::encoding_wchar);
+        xmlwriter_wchar writer(wstr);
+        xmlDoc.save(writer, L"\t", pugi::format_default, pugi::encoding_wchar);
     }
 
     void XmlElement::saveToUtf8(std::string& utf8)
     {
         pugi::xml_document xmlDoc;
         saveToXmlDoc(xmlDoc, this);
-        xmlDoc.save(xmlwriter_uft8(utf8), L"\t", pugi::format_default, pugi::encoding_utf8);
+        xmlwriter_uft8 writer(utf8);
+        xmlDoc.save(writer, L"\t", pugi::format_default, pugi::encoding_utf8);
     }
 
     void XmlElement::saveToFile(const std::wstring& filename)
@@ -251,7 +253,8 @@ namespace Storm{
         saveToXmlDoc(xmlDoc, this);
         File file(filename);
         file.open(File::ReadWrite | File::Truncate);
-        xmlDoc.save(xmlwriter_uft8_file(file), L"\t", pugi::format_default, pugi::encoding_utf8);
+        xmlwriter_uft8_file writer(file);
+        xmlDoc.save(writer, L"\t", pugi::format_default, pugi::encoding_utf8);
     }
 
     //////////////////////////////////////////////////////////////////////////

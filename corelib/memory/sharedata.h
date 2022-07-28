@@ -81,7 +81,7 @@ namespace Storm {
         {
             if (dptr_)
             {
-                if (!dptr_.unique())
+                if (dptr_.use_count() > 1)
                 {
                     dptr_ = std::shared_ptr<T>(new T(*dptr_));
                 }

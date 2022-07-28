@@ -1151,7 +1151,7 @@ void example_fs()
     }
 
     {
-        std::experimental::filesystem::path path1(L"a.text.g");
+        std::filesystem::path path1(L"a.text.g");
         std::wcout << path1.native() << ", " << path1.parent_path() << std::endl;
         std::wcout << path1.filename() << ", " << path1.stem() << ", " << path1.extension() << std::endl;
     }

@@ -55,7 +55,7 @@ public:
         _postFun(std::move(callback));
     }
 
-    template<class Owner, class S, class ...A >
+   /* template<class Owner, class S, class ...A >
     void emitAsync(Owner* object, Event<S>* event,  A&&... args)
     {
         typename priv::InvokerThisHolder<Owner>::Holder object_ = object;
@@ -68,7 +68,7 @@ public:
             }
         };
         _postFun(std::move(callback));
-    }
+    }*/
 
     template<class Owner, class S, class ...A >
     void emitAsync(const std::shared_ptr<Owner>& object, Event<S>* event, A&&... args)

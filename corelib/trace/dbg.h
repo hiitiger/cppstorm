@@ -10,6 +10,6 @@ namespace trace {
 #define  DAssert(e) trace::d_assert((!!(e)), __FILE__, __FUNCTION__, __LINE__,"")
 #define  DAssert_M(e, msg) trace::d_assert((!!(e)), __FILE__, __FUNCTION__, __LINE__, msg)
 #else
-#define  DAssert(e) 
-#define  DAssert_M(e, msg)  
+#define  DAssert(e) do{} while(0)
+#define  DAssert_M(e, msg)  do{} while(0)
 #endif // _DEBUG

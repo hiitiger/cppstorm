@@ -1,6 +1,7 @@
 #pragma once
 
 #include <ppltasks.h>
+#define _RESUMABLE_ENABLE_LEGACY_AWAIT_ADAPTERS
 #include <pplawait.h>
 
 namespace AppUI
@@ -264,7 +265,7 @@ namespace concurrency_
             {
                 auto op = concurrency::task_options(AppUI::static_pplScheduler());
                 op.set_continuation_context(concurrency::task_continuation_context::get_current_winrt_context());
-                _Task.then([_ResumeCb](concurrency::task<_Ty>&)
+                _Task.then([_ResumeCb](const concurrency::task<_Ty>&)
                 {
                     _ResumeCb();
                 }, op);
@@ -273,7 +274,7 @@ namespace concurrency_
             {
                 auto op = concurrency::task_options(concurrency_::static_pplScheduler());
                 op.set_continuation_context(concurrency::task_continuation_context::get_current_winrt_context());
-                _Task.then([_ResumeCb](concurrency::task<_Ty>&)
+                _Task.then([_ResumeCb](const concurrency::task<_Ty>&)
                 {
                     _ResumeCb();
                 }, op);
@@ -304,10 +305,12 @@ namespace concurrency_
 
         }
     };
+
+
 }
 
 template <typename _Ty>
-auto operator co_await(concurrency::task<_Ty> &&f)
+auto operator co_await(concurrency::task<_Ty>&& f)
 {
     return concurrency_::Awaiter<_Ty>{std::move(f)};
 }

@@ -152,7 +152,9 @@ INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
     Storm::App app;
 
-    example_callback();
+    //example_callback();
+
+    bookmark_run();
 
 
     app.run();
