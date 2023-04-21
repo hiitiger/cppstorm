@@ -6,7 +6,7 @@
 
 namespace Storm {
 
-const int k_MAXLOGFILESIZE = 32 * 1024 * 1024;
+const int k_MAXLOGFILESIZE = 100 * 1024 * 1024;
 static std::atomic<bool> k_logQuit = false;
 
 class Logger
@@ -24,6 +24,7 @@ public:
         char file[128];
         char function[128];
         unsigned int line;
+        unsigned int tid;
         DateTime datetime;
         std::wstring data;
     };
@@ -46,7 +47,8 @@ public:
         Utils::makeSureDirExist(fullPath_);
 
         fullPath_.append(Utils::appProcessName());
-        fullPath_.erase(fullPath_.find_last_of('.'));
+        //fullPath_.erase(fullPath_.find_last_of('.'));
+        fullPath_.append(std::to_wstring(GetCurrentProcessId()));
         fullPath_.append(L".log");
 
         start();
@@ -75,6 +77,7 @@ public:
         item->line = line;
         item->datetime = DateTime::now();
         item->data = data;
+        item->tid = GetCurrentThreadId();
 
         std::unique_lock<std::mutex> lock(logLock_);
         logItems_.push_back(std::unique_ptr<LogItem>(item));
@@ -95,7 +98,7 @@ private:
 
             memset(header, 0, sizeof(char) * HEADER_SIZE);
 
-            sprintf_s(header, HEADER_SIZE, " [%s][%s:%s@:%d] ", item->mod, item->file, item->function, item->line);
+            sprintf_s(header, HEADER_SIZE, " [%d][%s][%s:%s@:%d] ", item->tid, item->mod, item->file, item->function, item->line);
 
             fs << header;
 

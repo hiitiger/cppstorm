@@ -50,4 +50,19 @@ private:
 
 }
 
-#define LOGGER(mod)  Storm::LogStream(mod, __FILE__, __FUNCTION__, __LINE__)
+template <typename T, size_t S>
+inline constexpr size_t get_file_name_offset(const T(&str)[S], size_t i = S - 1)
+{
+    return (str[i] == '/' || str[i] == '\\') ? i + 1 : (i > 0 ? get_file_name_offset(str, i - 1) : 0);
+}
+
+template <typename T>
+inline constexpr size_t get_file_name_offset(T(&str)[1])
+{
+    return 0;
+}
+
+
+#define __FILENAME__ &__FILE__[get_file_name_offset(__FILE__)]
+
+#define LOGGER(mod)  Storm::LogStream(mod, __FILENAME__, __FUNCTION__, __LINE__)
